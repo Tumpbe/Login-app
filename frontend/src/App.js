@@ -1,4 +1,6 @@
 import './App.css';
+import './components/Login';
+import './components/Register';
 
 function App() {
   return (
