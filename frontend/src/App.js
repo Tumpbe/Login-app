@@ -1,11 +1,19 @@
 import './App.css';
-import './components/Login';
-import './components/Register';
+import { Login } from './components/Login';
+import { Register } from './components/Register';
+
+const addUser = (name, email, password, passwordConfirm, e) => {
+  /* TODO
+  add new user
+  ... POST request to users database (/api/users)
+  */
+}
 
 function App() {
   return (
-    <div className="App">
-    </div>
+    <>
+    <Register handleSubmit={addUser}></Register>
+    </>
   );
 }
 
