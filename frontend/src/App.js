@@ -1,16 +1,30 @@
 import { Route, Routes } from 'react-router';
-
-import './App.css';
+import { Home } from './components/Home';
 import { Login } from './components/Login';
 import { Register } from './components/Register';
+import styled from 'styled-components';
+import './App.css';
 
-function App() {
+const AppContainer = styled.div`
+  font-family: "Open Sans", sans-serif;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: dodgerblue;
+`
+
+const App = () => {
+
   return (
-    <>
-    <Routes>
-      <Route path="/register" element={<Register/>}/>
-    </Routes>
-    </>
+    <AppContainer>
+      <Routes>
+        <Route path="/" element={<Home/>}/>
+        <Route path="/register" element={<Register/>}/>
+        <Route path="/login" element={<Login/>}/>
+      </Routes>
+    </AppContainer>
   );
 }
 
