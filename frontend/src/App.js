@@ -6,14 +6,13 @@ import styled from 'styled-components';
 import './App.css';
 
 const AppContainer = styled.div`
-  font-family: "Open Sans", sans-serif;
   margin: 0;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: dodgerblue;
-`
+`;
 
 const App = () => {
 
