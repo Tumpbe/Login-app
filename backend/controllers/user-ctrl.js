@@ -1,36 +1,23 @@
+const { restart } = require('nodemon');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user-model');
 
-createUser = (req, res) => {
-    const body = req.body;
 
-    if (!body) {
-        return res.status(400).json({
-            success: false,
-            error: 'You must provide a user',
-        });
+createUser = async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password)
+      return res.status(400).json({success: false, error: "Email and password required!"});
+
+    try {
+        const user = new User({email, password});
+
+        await user.save(); // Crypting with salt of 10 done in schema
+
+        return res.status(200).json({success: true, payload: user});
+    } catch(err) {
+        return res.status(500).json({success: false, error: err});
     }
-
-    const user = new User(body);
-
-    if (!user) {
-        return res.status(400).json({ success: false, error: err });
-    }
-
-    user
-        .save()
-        .then(() => {
-            return res.status(201).json({
-                success: true,
-                id: user._id,
-                message: 'User created!',
-            })
-        })
-        .catch(error => {
-            return res.status(400).json({
-                error,
-                message: 'User not created!',
-            })
-        });
 }
 
 updateUser = async (req, res) => {
@@ -116,10 +103,37 @@ getUsers = async (req, res) => {
     }).catch(err => console.log(err));
 }
 
+checkAuth = async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password)
+      return res.status(400).json({success: false, error: "Email and password required!"});
+
+    try {
+        const user = await User.findOne({ email: req.body.email }).exec();
+
+        if(!user) return res.status(404).json({success: false, error: "User not found, check email!"});
+
+        if(!user.verifyPassword(password)){
+            return res.status(401).json({success: false, error: "Auth failure check password!"});
+        }
+        // Auth success
+
+        // Make JSON web token for user
+        const token = jwt.sign({ sub: user.id }, secret, { expiresIn: '24h' });
+        res.cookie.token = token;
+
+        return res.status(200).json({success: true, payload: user});
+
+    } catch(err){
+        return res.status(500).json({success: false, error: err});
+    }
+}
+
 module.exports = {
     createUser,
     updateUser,
     deleteUser,
     getUsers,
     getUserById,
+    checkAuth,
 }
