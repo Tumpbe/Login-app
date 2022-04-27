@@ -6,7 +6,7 @@ import axios from "axios"
 const AuthBox = styled.div`
   display: flex;
   justify-content: center;
-  height: 485px;
+  height: 510px;
   width: 500px;
   padding-top: 30px;
   border-radius: 60px;
@@ -55,7 +55,9 @@ export const Register = () => {
   const [errMsg, setErrMsg] = useState('');
 
   const validEmailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+  const passwordThreshold = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[-+_!@#$%^&*.,?]).+$";
   const emailRegex = new RegExp(validEmailRegex);
+  const passwordRegex = new RegExp(passwordThreshold);
 
   const checkAuth = () => {
     if (password.length < 10) {
@@ -67,7 +69,11 @@ export const Register = () => {
     } else if (!emailRegex.test(email)) {
       setErrMsg("Email is not valid. Check misspelling.");
       return false;
-    } else {
+    } else if (!passwordRegex.test(password)) {
+      setErrMsg("Password needs uppercase, lowercase,\nspecial character and numeric value");
+      return false;
+    } 
+    else {
       return true;
     }
   }
@@ -97,7 +103,9 @@ export const Register = () => {
     <AuthBox>
       <form onSubmit={registerSubmit}>
         <Title>Register page</Title>
-        <div>{errMsg}</div>
+        <div style={{"text-align": 'center', "whiteSpace": "pre-wrap"}}>
+          {errMsg}
+        </div>
         <div style={{"paddingBottom": 20}}>
           <InputDiv type="text" placeholder="Enter username" value={name} onChange={(e) => setName(e.target.value)} required/>
         </div>
