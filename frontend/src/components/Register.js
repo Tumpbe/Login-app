@@ -6,7 +6,7 @@ import axios from "axios"
 const AuthBox = styled.div`
   display: flex;
   justify-content: center;
-  height: 475px;
+  height: 485px;
   width: 500px;
   padding-top: 30px;
   border-radius: 60px;
@@ -54,20 +54,43 @@ export const Register = () => {
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [errMsg, setErrMsg] = useState('');
 
+  const validEmailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+  const emailRegex = new RegExp(validEmailRegex);
+
+  const checkAuth = () => {
+    if (password.length < 10) {
+      setErrMsg("Password needs to be atleast 10 characters long");
+      return false;
+    } else if (password !== passwordConfirm) {
+      setErrMsg("Passwords don't match");
+      return false;
+    } else if (!emailRegex.test(email)) {
+      setErrMsg("Email is not valid. Check misspelling.");
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   const registerSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await axios.post("/users", {
-        name: name,
-        email: email,
-        password: password,
-        passwordConfirm: passwordConfirm
-      });
-    }
-    catch (e) {
-      if (e.response) {
-        setErrMsg(e.response.data.msg);
+    if (checkAuth()) {
+      try {
+        await axios.post("/users", {
+          name: name,
+          email: email,
+          password: password,
+          passwordConfirm: passwordConfirm
+        });
       }
+      catch (e) {
+        if (e.response) {
+          setErrMsg(e.response.data.msg);
+        }
+      }
+    }
+    else {
+      console.log("auth failed");
     }
   }
   return (
