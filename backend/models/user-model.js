@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const Schema = mongoose.Schema;
 
 const User = new Schema(
@@ -18,7 +19,15 @@ const User = new Schema(
             set: (password) => bcrypt.hashSync(password, 10), // Bcrypt used to crypt with a salt value of 10
         },
     },
-    { timestamps: true },
+    { timestamps: true, 
+      toJSON: {
+        versionKey: false,
+        transform: (_, ret) => {
+            const { password, _id, ...user } = ret;
+            return { id: _id, ...user };
+        },
+      },
+    },
 )
 
 User.methods.verifyPassword = async function (password) {

@@ -1,7 +1,7 @@
-import { useState } from "react"
+import { useState } from "react";
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import axios from "axios"
+import axios from "axios";
 
 const AuthBox = styled.div`
   display: flex;
@@ -47,14 +47,34 @@ const InputButton = styled.button`
   }
 `;
 
-export const Login = () => {
+export const Login = ({loginCallBack}) => {
   const [email, setEmail ] = useState('');
   const [password, setPassword ] = useState('');
   const [errMsg, setErrMsg] = useState('');
 
+  const loginSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post("http://localhost:3001/api/login", 
+      {
+        email: email,
+        password: password,
+      }, 
+      {withCredentials: true}
+      );
+
+      const { payload } = res.data;
+      loginCallBack(payload);
+    }
+    catch (err) {
+      if (err.response) {
+        setErrMsg(err.response.data.msg);
+      }
+    }
+  }
   return (
     <AuthBox>
-      <form>
+      <form onSubmit={loginSubmit}>
         <Title>Login page</Title>
         <div>{errMsg}</div>
         <div style={{"paddingBottom": 20}}>

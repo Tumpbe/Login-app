@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 const ButtonGroup = styled.div`
   display: flex;
@@ -19,13 +19,14 @@ const AuthButtons = styled.button`
   cursor: pointer;
 `;
 
-export const Home = () => {
+export const Home = ({user}) => {
   const navigate = useNavigate();
   return (
     <>
       <ButtonGroup>
         <AuthButtons onClick={() => navigate('/login')}>Login</AuthButtons>
         <AuthButtons onClick={() => navigate('/register')}>Register</AuthButtons>
+        {user && <AuthButtons onClick={() => navigate(`/profile/${user.id}`)}>Profile</AuthButtons>}
       </ButtonGroup>
     </>
   )

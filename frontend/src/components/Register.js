@@ -1,7 +1,7 @@
-import { useState } from "react"
-import { Link } from 'react-router-dom';
+import { useState } from "react";
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import axios from "axios"
+import axios from "axios";
 
 const AuthBox = styled.div`
   display: flex;
@@ -48,18 +48,19 @@ const InputButton = styled.button`
 `;
 
 export const Register = () => {
-  const [name, setName ] = useState('');
   const [email, setEmail ] = useState('');
   const [password, setPassword ] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [errMsg, setErrMsg] = useState('');
+
+  const navigate = useNavigate();
 
   const validEmailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
   const passwordThreshold = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[-+_!@#$%^&*.,?]).+$";
   const emailRegex = new RegExp(validEmailRegex);
   const passwordRegex = new RegExp(passwordThreshold);
 
-  const checkAuth = () => {
+  const validateFormData = () => {
     if (password.length < 10) {
       setErrMsg("Password needs to be atleast 10 characters long");
       return false;
@@ -80,14 +81,14 @@ export const Register = () => {
 
   const registerSubmit = async (e) => {
     e.preventDefault();
-    if (checkAuth()) {
+    if (validateFormData()) {
       try {
-        await axios.post("/users", {
-          name: name,
+        await axios.post("http://localhost:3001/api/register", {
           email: email,
           password: password,
           passwordConfirm: passwordConfirm
         });
+        navigate('/');
       }
       catch (e) {
         if (e.response) {
@@ -96,7 +97,7 @@ export const Register = () => {
       }
     }
     else {
-      console.log("auth failed");
+      console.log("Registering failed");
     }
   }
   return (
@@ -105,9 +106,6 @@ export const Register = () => {
         <Title>Register page</Title>
         <div style={{"text-align": 'center', "whiteSpace": "pre-wrap"}}>
           {errMsg}
-        </div>
-        <div style={{"paddingBottom": 20}}>
-          <InputDiv type="text" placeholder="Enter username" value={name} onChange={(e) => setName(e.target.value)} required/>
         </div>
         <div style={{"paddingBottom": 20}}>
           <InputDiv type="text" placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
