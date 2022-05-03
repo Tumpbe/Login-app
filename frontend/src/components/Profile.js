@@ -7,6 +7,8 @@ export const Profile = () => {
   const [errMsg, setErrMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('')
   const [ user, setUser ] = useState(undefined);
+  const [passwordChangeVisible, setPasswordChangeVisible] = useState(false);
+  const [newPassword ,setNewPassword] = useState('');
 
   const { id } = useParams();
   
@@ -19,11 +21,51 @@ export const Profile = () => {
       setErrMsg('You are not authenticated, please log in');
     }
   }, [])
+
+  const changePassword = async () => {
+    try {
+      const res = await axios.post(`http://localhost:3001/api/user/${id}`, {password: newPassword});
+
+    } catch (err) {
+      
+    }
+  }
+
+  const deleteUser = async () => {
+    try {
+      const res = await axios.delete(`http://localhost:3001/api/user/${id}`);
+
+    } catch (err) {
+
+    }
+  }
+
+  const logoutUser = async () => {
+    try {
+      const res = await axios.get();
+
+    } catch (err) {
+      
+    }
+  }
+
   return (
     errMsg? <div>{errMsg} 
       <Link style={{"marginLeft": 100}} to={"/"}>Back to home</Link></div>: 
-    successMsg? <div>{successMsg}
-      <Link style={{"marginLeft": 100}} to={"/"}>Back to home</Link></div>:
+    successMsg? 
+      <div>{successMsg}
+        <button onClick={setPasswordChangeVisible(true)}>Change password</button>
+        { passwordChangeVisible ?
+          <form onSubmit={changePassword}>
+            <input type="password" placeholder="Enter new password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required></input>
+            <button type="submit">Change password</button>
+          </form>
+          : <div></div>
+        }
+        <button onClick={deleteUser}>Delete user</button>
+        <button onClick={logoutUser}>Logout</button>
+        <Link style={{"marginLeft": 100}} to={"/"}>Back to home</Link>
+      </div>:
     <div></div>
   )
 }
