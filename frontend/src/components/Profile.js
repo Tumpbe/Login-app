@@ -8,6 +8,7 @@ export const Profile = () => {
   const [successMsg, setSuccessMsg] = useState('')
   const [ user, setUser ] = useState(undefined);
   const [passwordChangeVisible, setPasswordChangeVisible] = useState(false);
+  const [password, setPassword ] = useState('');
   const [newPassword ,setNewPassword] = useState('');
 
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ export const Profile = () => {
     try{
       const res = await axios.get(`http://localhost:3001/api/user/${id}`, {withCredentials: true});
       const { payload } = res.data;
-      setSuccessMsg('Nice login successful')
+      setSuccessMsg('Nice login successful');
     } catch (err) {
       setErrMsg('You are not authenticated, please log in');
     }
@@ -25,16 +26,18 @@ export const Profile = () => {
 
   const changePassword = async () => {
     try {
-      const res = await axios.put(`http://localhost:3001/api/user/${id}`, {password: newPassword});
-
+      await axios.put(`http://localhost:3001/api/user/${id}`, {password, newPassword});
+      setSuccessMsg('Password changed');
     } catch (err) {
-      
+      if (err.response) {
+        setErrMsg(err.response.data.msg);
+        }
     }
   }
 
   const deleteUser = async () => {
     try {
-      const res = await axios.delete(`http://localhost:3001/api/user/${id}`, {withCredentials: true});
+      await axios.delete(`http://localhost:3001/api/user/${id}`, {withCredentials: true});
       navigate('/');
     } catch (err) {
       if (err.response) {
@@ -45,7 +48,7 @@ export const Profile = () => {
 
   const logoutUser = async () => {
     try {
-      const res = await axios.get('http://localhost:3001/api/logout', {withCredentials: true});
+      await axios.get('http://localhost:3001/api/logout', {withCredentials: true});
       navigate('/');
     } catch (err) {
       if (err.response) {
@@ -62,6 +65,7 @@ export const Profile = () => {
         <button onClick={() => setPasswordChangeVisible(true)}>Change password</button>
         { passwordChangeVisible ?
           <form onSubmit={changePassword}>
+            <input type="password" placeholder="Enter current password" value={password} onChange={(e) => setPassword(e.target.value)} required></input>
             <input type="password" placeholder="Enter new password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required></input>
             <button type="submit">Change password</button>
           </form>

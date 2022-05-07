@@ -79,9 +79,20 @@ const userLogin = async (req, res) => {
 
 const changePassword = async (req, res) => {
     try{
+        const { password, newPassword } = req.body;
+        const user = await User.findById(req.params.id).exec();
+        if(!user) return res.status(404).json({success: false, error: "User not found!"});
         
+        const success = await user.verifyPassword(password);
+        if(!success){
+            return res.status(401).json({success: false, error: "Wrong password!"});
+        }
+        user.password = newPassword;
+        user.save();
+        return res.status(200).json({success: true});
     } catch (err) {
-        
+        console.log(err);
+        return res.status(500).json({success: false, error: err});
     }
 }
 
