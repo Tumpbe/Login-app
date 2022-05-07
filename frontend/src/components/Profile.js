@@ -11,6 +11,9 @@ export const Profile = () => {
   const [password, setPassword ] = useState('');
   const [newPassword ,setNewPassword] = useState('');
 
+
+  const passwordThreshold = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[-+_!@#$%^&*.,?]).+$";
+  const passwordRegex = new RegExp(passwordThreshold);
   const navigate = useNavigate();
   const { id } = useParams();
   
@@ -24,14 +27,30 @@ export const Profile = () => {
     }
   }, [])
 
+  const validateFormData = () => {
+    if (newPassword.length < 10) {
+      return false;
+    } else if (!passwordRegex.test(newPassword)) {
+      return false;
+    } 
+    else {
+      return true;
+    }
+  }
+
   const changePassword = async () => {
-    try {
-      await axios.put(`http://localhost:3001/api/user/${id}`, {password, newPassword});
-      setSuccessMsg('Password changed');
-    } catch (err) {
-      if (err.response) {
-        setErrMsg(err.response.data.msg);
-        }
+    if (validateFormData()) {
+      try {
+          await axios.put(`http://localhost:3001/api/user/${id}`, {password, newPassword});
+          console.log('Password changed');
+      } catch (err) {
+        if (err.response) {
+          setErrMsg(err.response.data.msg);
+          }
+      }
+    }
+    else {
+      alert("New password not strong enough (atleast 10 characters, number, lowercase and uppercase)");
     }
   }
 
