@@ -68,7 +68,7 @@ const userLogin = async (req, res) => {
         
         // Make JSON web token for user
         const token = jwt.sign({ sub: user.id }, process.env.SECRET, { expiresIn: '24h' });
-        res.cookie('token', token);
+        res.cookie('token', token, {httpOnly: true});
         
         return res.status(200).json({success: true, payload: user.toJSON()});
     } catch(err){

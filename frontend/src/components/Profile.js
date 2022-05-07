@@ -38,9 +38,10 @@ export const Profile = () => {
     } catch (err) {
       if (err.response) {
         setErrMsg(err.response.data.msg);
+      }
     }
   }
-
+  
   const logoutUser = async () => {
     try {
       const res = await axios.get();

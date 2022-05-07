@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const helmet = require("helmet");
 
 dotenv.config();
 
@@ -18,6 +19,25 @@ app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(morgan('dev'));
+/*
+Helmet features used:
+  contentSecurityPolicy
+  crossOriginEmbedderPolicy
+  crossOriginOpenerPolicy
+  crossOriginResourcePolicy
+  dnsPrefetchControl
+  expectCt
+  frameguard
+  hidePoweredBy
+  hsts
+  ieNoOpen
+  noSniff
+  originAgentCluster
+  permittedCrossDomainPolicies
+  referrerPolicy
+  xssFilter 
+*/
+app.use(helmet());
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
