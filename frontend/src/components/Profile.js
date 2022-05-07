@@ -45,7 +45,7 @@ export const Profile = () => {
           console.log('Password changed');
       } catch (err) {
         if (err.response) {
-          setErrMsg(err.response.data.msg);
+          alert(err.response.data.error);
           }
       }
     }

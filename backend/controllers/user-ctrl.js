@@ -88,7 +88,7 @@ const changePassword = async (req, res) => {
             return res.status(401).json({success: false, error: "Wrong password!"});
         }
         user.password = newPassword;
-        user.save();
+        await user.save();
         return res.status(200).json({success: true});
     } catch (err) {
         console.log(err);
