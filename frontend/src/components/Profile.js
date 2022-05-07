@@ -34,7 +34,7 @@ export const Profile = () => {
 
   const deleteUser = async () => {
     try {
-      const res = await axios.delete(`http://localhost:3001/api/user/${id}`);
+      const res = await axios.delete(`http://localhost:3001/api/user/${id}`, {withCredentials: true});
       navigate('/');
     } catch (err) {
       if (err.response) {
@@ -42,7 +42,7 @@ export const Profile = () => {
         }
       }
   }
-  
+
   const logoutUser = async () => {
     try {
       const res = await axios.get('http://localhost:3001/api/user/logout', {withCredentials: true});
