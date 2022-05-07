@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAsyncEffect } from 'use-async-effect'
 import axios from "axios";
@@ -10,6 +10,7 @@ export const Profile = () => {
   const [passwordChangeVisible, setPasswordChangeVisible] = useState(false);
   const [newPassword ,setNewPassword] = useState('');
 
+  const navigate = useNavigate();
   const { id } = useParams();
   
   useAsyncEffect(async () => {
@@ -34,12 +35,12 @@ export const Profile = () => {
   const deleteUser = async () => {
     try {
       const res = await axios.delete(`http://localhost:3001/api/user/${id}`);
-      
+      navigate('/');
     } catch (err) {
       if (err.response) {
         setErrMsg(err.response.data.msg);
+        }
       }
-    }
   }
   
   const logoutUser = async () => {

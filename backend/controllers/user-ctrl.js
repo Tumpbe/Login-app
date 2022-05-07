@@ -32,7 +32,7 @@ const deleteUser = async (req, res) => {
                 .status(404)
                 .json({ success: false, error: `User not found` });
         }
-
+        res.clearCookie('token');
         return res.status(200).json({ success: true, data: user });
     }).catch(err => console.log(err));
 }
