@@ -85,10 +85,15 @@ const changePassword = async (req, res) => {
     }
 }
 
+const userLogout = async (req, res) => {
+    res.clearCookie('token');
+}
+
 module.exports = {
     createUser,
     deleteUser,
     getUserById,
     userLogin,
-    changePassword
+    changePassword,
+    userLogout
 }
