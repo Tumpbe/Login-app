@@ -24,7 +24,7 @@ export const Profile = () => {
 
   const changePassword = async () => {
     try {
-      const res = await axios.post(`http://localhost:3001/api/user/${id}`, {password: newPassword});
+      const res = await axios.put(`http://localhost:3001/api/user/${id}`, {password: newPassword});
 
     } catch (err) {
       
@@ -34,9 +34,10 @@ export const Profile = () => {
   const deleteUser = async () => {
     try {
       const res = await axios.delete(`http://localhost:3001/api/user/${id}`);
-
+      
     } catch (err) {
-
+      if (err.response) {
+        setErrMsg(err.response.data.msg);
     }
   }
 
@@ -54,7 +55,7 @@ export const Profile = () => {
       <Link style={{"marginLeft": 100}} to={"/"}>Back to home</Link></div>: 
     successMsg? 
       <div>{successMsg}
-        <button onClick={setPasswordChangeVisible(true)}>Change password</button>
+        <button onClick={() => setPasswordChangeVisible(true)}>Change password</button>
         { passwordChangeVisible ?
           <form onSubmit={changePassword}>
             <input type="password" placeholder="Enter new password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required></input>

@@ -77,9 +77,18 @@ const userLogin = async (req, res) => {
     }
 }
 
+const changePassword = async (req, res) => {
+    try{
+        
+    } catch (err) {
+        
+    }
+}
+
 module.exports = {
     createUser,
     deleteUser,
     getUserById,
     userLogin,
+    changePassword
 }
