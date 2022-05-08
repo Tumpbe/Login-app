@@ -12,7 +12,6 @@ export const Profile = () => {
   const [password, setPassword ] = useState('');
   const [newPassword ,setNewPassword] = useState('');
 
-
   const passwordThreshold = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[-+_!@#$%^&*.,?]).+$";
   const passwordRegex = new RegExp(passwordThreshold);
   const navigate = useNavigate();
@@ -39,7 +38,8 @@ export const Profile = () => {
     }
   }
 
-  const changePassword = async () => {
+  const changePassword = async (e) => {
+    e.preventDefault();
     if (validateFormData()) {
       try {
           await axios.put(`http://localhost:3001/api/user/${id}`, {password, newPassword}, {withCredentials: true});
@@ -83,6 +83,7 @@ export const Profile = () => {
     authSuccessMsg? 
       <div>{authSuccessMsg}
         <div>{errMsg}</div>
+        <div>{successMsg}</div>
         <button onClick={() => setPasswordChangeVisible(true)}>Change password</button>
         { passwordChangeVisible ?
           <form onSubmit={changePassword}>
