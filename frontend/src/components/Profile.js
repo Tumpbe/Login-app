@@ -43,14 +43,17 @@ export const Profile = () => {
     if (validateFormData()) {
       try {
           await axios.put(`http://localhost:3001/api/user/${id}`, {password, newPassword}, {withCredentials: true});
+          setErrMsg('');
           setSuccessMsg('Password changed');
       } catch (err) {
         if (err.response) {
+          setSuccessMsg('');
           setErrMsg(err.response.data.error);
           }
       }
     }
     else {
+      setSuccessMsg('');
       setErrMsg("New password not strong enough (atleast 10 characters, number, lowercase and uppercase)");
     }
   }
