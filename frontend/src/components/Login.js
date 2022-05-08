@@ -68,7 +68,7 @@ export const Login = ({loginCallBack}) => {
     }
     catch (err) {
       if (err.response) {
-        setErrMsg(err.response.data.msg);
+        setErrMsg(err.response.data.error);
       }
     }
   }

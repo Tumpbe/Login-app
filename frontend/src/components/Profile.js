@@ -5,8 +5,9 @@ import axios from "axios";
 
 export const Profile = () => {
   const [errMsg, setErrMsg] = useState('');
-  const [successMsg, setSuccessMsg] = useState('')
-  const [ user, setUser ] = useState(undefined);
+  const [successMsg, setSuccessMsg] = useState('');
+  const [authSuccessMsg, setAuthSuccessMsg] = useState('');
+  const [authErrMsg, setAuthErrMsg] = useState('');
   const [passwordChangeVisible, setPasswordChangeVisible] = useState(false);
   const [password, setPassword ] = useState('');
   const [newPassword ,setNewPassword] = useState('');
@@ -21,9 +22,9 @@ export const Profile = () => {
     try{
       const res = await axios.get(`http://localhost:3001/api/user/${id}`, {withCredentials: true});
       const { payload } = res.data;
-      setSuccessMsg('Nice login successful');
+      setAuthSuccessMsg('You are authenticated');
     } catch (err) {
-      setErrMsg('You are not authenticated, please log in');
+      setAuthErrMsg('You are not authenticated, please log in');
     }
   }, [])
 
@@ -41,16 +42,16 @@ export const Profile = () => {
   const changePassword = async () => {
     if (validateFormData()) {
       try {
-          await axios.put(`http://localhost:3001/api/user/${id}`, {password, newPassword});
-          console.log('Password changed');
+          await axios.put(`http://localhost:3001/api/user/${id}`, {password, newPassword}, {withCredentials: true});
+          setSuccessMsg('Password changed');
       } catch (err) {
         if (err.response) {
-          alert(err.response.data.error);
+          setErrMsg(err.response.data.error);
           }
       }
     }
     else {
-      alert("New password not strong enough (atleast 10 characters, number, lowercase and uppercase)");
+      setErrMsg("New password not strong enough (atleast 10 characters, number, lowercase and uppercase)");
     }
   }
 
@@ -77,10 +78,11 @@ export const Profile = () => {
   }
 
   return (
-    errMsg? <div>{errMsg} 
+    authErrMsg? <div>{authErrMsg} 
       <Link style={{"marginLeft": 100}} to={"/"}>Back to home</Link></div>: 
-    successMsg? 
-      <div>{successMsg}
+    authSuccessMsg? 
+      <div>{authSuccessMsg}
+        <div>{errMsg}</div>
         <button onClick={() => setPasswordChangeVisible(true)}>Change password</button>
         { passwordChangeVisible ?
           <form onSubmit={changePassword}>
