@@ -16,6 +16,9 @@ const AuthButtons = styled.button`
   font-family: Helvetica;
   text-shadow: 1px 1px black;
   border-radius: 25px;
+  &:hover {
+    background-color: #4CAF50; /* Green */
+  }
   cursor: pointer;
 `;
 

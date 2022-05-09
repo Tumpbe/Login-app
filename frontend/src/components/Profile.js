@@ -1,7 +1,19 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAsyncEffect } from 'use-async-effect'
+import styled from 'styled-components';
 import axios from "axios";
+
+const ProfileContainer= styled.div`
+  height: 510px;
+  width: 500px;
+`;
+
+const InputBox = styled.div`
+  position: absolute;
+  width: 150px;
+  height: 100px;
+`;
 
 export const Profile = () => {
   const [errMsg, setErrMsg] = useState('');
@@ -11,6 +23,7 @@ export const Profile = () => {
   const [passwordChangeVisible, setPasswordChangeVisible] = useState(false);
   const [password, setPassword ] = useState('');
   const [newPassword ,setNewPassword] = useState('');
+  const [passwordConfirm, setPasswordConfirm] = useState('');
 
   const passwordThreshold = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[-+_!@#$%^&*.,?]).+$";
   const passwordRegex = new RegExp(passwordThreshold);
@@ -29,10 +42,15 @@ export const Profile = () => {
 
   const validateFormData = () => {
     if (newPassword.length < 10) {
+      setErrMsg("Password needs to be atleast 10 characters long");
       return false;
     } else if (!passwordRegex.test(newPassword)) {
+      setErrMsg("Password needs uppercase, lowercase,\nspecial character and numeric value");
       return false;
-    } 
+    } else if (newPassword !== passwordConfirm) {
+      setErrMsg("Passwords don't match");
+      return false;
+    }  
     else {
       return true;
     }
@@ -76,23 +94,26 @@ export const Profile = () => {
     } catch (err) {
       if (err.response) {
         setErrMsg(err.response.data.msg);
-        }
+      }
     }
   }
 
   return (
     authErrMsg? <div>{authErrMsg} 
       <Link style={{"marginLeft": 100}} to={"/"}>Back to home</Link></div>: 
-    authSuccessMsg? 
+    authSuccessMsg?
       <div>{authSuccessMsg}
         <div>{errMsg}</div>
         <div>{successMsg}</div>
-        <button onClick={() => setPasswordChangeVisible(true)}>Change password</button>
+        <button onClick={() => setPasswordChangeVisible(!passwordChangeVisible)}>Change password</button>
         { passwordChangeVisible ?
           <form onSubmit={changePassword}>
-            <input type="password" placeholder="Enter current password" value={password} onChange={(e) => setPassword(e.target.value)} required></input>
-            <input type="password" placeholder="Enter new password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required></input>
-            <button type="submit">Change password</button>
+            <InputBox>
+              <input type="password" placeholder="Enter current password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              <input type="password" placeholder="Enter new password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
+              <input type="password" placeholder="Re-enter new password" value={passwordConfirm} onChange={(e) => setPasswordConfirm(e.target.value)} required/>
+              <button type="submit">Set new password</button>
+            </InputBox>
           </form>
           : <div></div>
         }
