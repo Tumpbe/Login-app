@@ -4,11 +4,6 @@ import { useAsyncEffect } from 'use-async-effect'
 import styled from 'styled-components';
 import axios from "axios";
 
-const ProfileContainer= styled.div`
-  height: 510px;
-  width: 500px;
-`;
-
 const InputBox = styled.div`
   position: absolute;
   width: 150px;
@@ -63,6 +58,7 @@ export const Profile = () => {
           await axios.put(`http://localhost:3001/api/user/${id}`, {password, newPassword}, {withCredentials: true});
           setErrMsg('');
           setSuccessMsg('Password changed');
+          e.target.reset();
       } catch (err) {
         if (err.response) {
           setSuccessMsg('');
